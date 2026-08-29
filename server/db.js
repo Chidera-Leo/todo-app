@@ -1,5 +1,9 @@
 const { Pool } = require('pg');
-const pool = new Pool({
+// Render gives you a DATABASE_URL. On your laptop there is none,
+// so the separate settings from your .env file are used instead.
+const pool = process.env.DATABASE_URL
+? new Pool({ connectionString: process.env.DATABASE_URL })
+: new Pool({
 host: process.env.DB_HOST,
 port: process.env.DB_PORT,
 user: process.env.DB_USER,

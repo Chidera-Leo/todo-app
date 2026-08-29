@@ -1,3 +1,5 @@
+const path = require('path');
+
 require('dotenv').config();
 const express = require('express');
 const pool = require('./db');
@@ -33,5 +35,11 @@ const result = await pool.query('DELETE FROM todos WHERE id = $1', [req.params.i
 if (result.rowCount === 0) return res.status(404).json({ error: 'Not found' });
 res.status(204).end();
 });
+
+// serve the built React app, and hand any unknown path to it
+const clientDir = path.join(__dirname, '..', 'client', 'dist');
+app.use(express.static(clientDir));
+app.use((req, res) => res.sendFile(path.join(clientDir, 'index.html')));
+
 const port = process.env.PORT || 3001;
 app.listen(port, () => console.log('API listening on port ' + port));
